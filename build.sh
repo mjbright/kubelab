@@ -6,21 +6,21 @@ PROMPTS=1
 
 kube1p15() {
     VERSION=1.15.11
-    BUILD_ARGS="--build-arg KUBECTL_V=$VERSION
+    BUILD_ARGS="--build-arg KUBECTL_V=v$VERSION
     --build-arg HELM_V=v3.1.2 --build-arg KUBECTX_V=0.8.0 --build-arg KUBEBOX_V=v0.7.0
     --build-arg DOCKER_CE_V=19.03.8 --build-arg DOCKER_MACHINE_V=0.16.1 --build-arg DOCKER_COMPOSE_V=1.24.1"
 }
 
 kube1p16() {
     VERSION=1.16.8
-    BUILD_ARGS="--build-arg KUBECTL_V=$VERSION
+    BUILD_ARGS="--build-arg KUBECTL_V=v$VERSION
     --build-arg HELM_V=v3.1.2 --build-arg KUBECTX_V=0.8.0 --build-arg KUBEBOX_V=v0.7.0
     --build-arg DOCKER_CE_V=19.03.8 --build-arg DOCKER_MACHINE_V=0.16.1 --build-arg DOCKER_COMPOSE_V=1.24.1"
 }
 
 kube1p17() {
     VERSION=1.17.4
-    BUILD_ARGS="--build-arg KUBECTL_V=$VERSION
+    BUILD_ARGS="--build-arg KUBECTL_V=v$VERSION
     --build-arg HELM_V=v3.1.2 --build-arg KUBECTX_V=0.8.0 --build-arg KUBEBOX_V=v0.7.0
     --build-arg DOCKER_CE_V=19.03.8 --build-arg DOCKER_MACHINE_V=0.16.1 --build-arg DOCKER_COMPOSE_V=1.24.1"
 }
@@ -28,7 +28,7 @@ kube1p17() {
 
 kube1p18() {
     VERSION=1.18.0
-    BUILD_ARGS="--build-arg KUBECTL_V=$VERSION
+    BUILD_ARGS="--build-arg KUBECTL_V=v$VERSION
     --build-arg HELM_V=v3.1.2 --build-arg KUBECTX_V=0.8.0 --build-arg KUBEBOX_V=v0.7.0
     --build-arg DOCKER_CE_V=19.03.8 --build-arg DOCKER_MACHINE_V=0.16.1 --build-arg DOCKER_COMPOSE_V=1.24.1"
 }
