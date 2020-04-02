@@ -66,8 +66,10 @@ RUN() {
 
 build_kubelab() {
     RUN docker build -f Dockerfile.kubelab $BUILD_ARGS -t mjbright/kubelab:$VERSION . &&
+        docker build -f Dockerfile.jupyterkubelab $BUILD_ARGS -t mjbright/jupyterkubelab:$VERSION . &&
         RUN docker login &&
-        RUN docker push mjbright/kubelab:$VERSION
+        RUN docker push mjbright/kubelab:$VERSION &&
+        RUN docker push mjbright/jupyterkubelab:$VERSION
 }
 
 ## -- Args: ----------------------------------------------------------------------
