@@ -104,6 +104,8 @@ RUN curl -L -o /root/bin/docker-compose_${DOCKER_COMPOSE_V} \
 #RUN chmod +x /root/bin/tput
 #ENTRYPOINT ["/sbin/tini", "--"]
 
+RUN echo 'export PATH=/root/bin:$PATH' >> .profile
+
 EXPOSE 8888
 
 CMD ["jupyter", "notebook", "--port", "8888", "--ip=0.0.0.0", "--allow-root", "--no-browser"]
