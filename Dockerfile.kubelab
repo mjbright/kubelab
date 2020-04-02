@@ -4,7 +4,7 @@ USER root
 
 # Upgrade Apt repos / Get tmux
 RUN apt-get update && apt-get upgrade -y
-RUN apt-get install -y tmux curl
+RUN apt-get install -y tmux curl vim
 
 WORKDIR /root/
 
@@ -30,7 +30,9 @@ ENV DOCKER_COMPOSE_V=$DOCKER_COMPOSE_V
 
 # Upgrade Pip / Get Kubernetes Python Client
 RUN pip install --upgrade pip && \
+    pip install setuptools && \
     pip install pick ppretty && \
+    pip install RISE && \
     pip install kubernetes
 
 # ---- Install bash_kernel:
