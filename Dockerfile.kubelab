@@ -41,16 +41,10 @@ RUN pip install --upgrade pip && \
 RUN pip install --no-cache-dir bash_kernel
 RUN python -m bash_kernel.install
 
-# ---- Install RISE extension
-RUN cd ~/src/git/ && \
-    git clone https://github.com/damianavila/RISE && \
-    cd ~/src/git/RISE && \
-    python setup.py install
-
 # Get kubectl
 RUN curl -L -o /root/bin/kubectl_${KUBECTL_V} https://storage.googleapis.com/kubernetes-release/release/$KUBECTL_V/bin/linux/amd64/kubectl && \
     rm -f /root/bin/kubectl 2>/dev/null && \
-    ln -s /root/bin/kubectl_${KUBECTL_V} /root/bin/kubectl && \
+    ln -s kubectl_${KUBECTL_V} /root/bin/kubectl && \
     chmod +x /root/bin/kubectl_${KUBECTL_V}
 
 # Get Helm
@@ -62,7 +56,7 @@ RUN mkdir -p /root/tmp/helm && \
     cp -a /root/tmp/helm/linux-amd64/helm /root/bin/helm_${HELM_V} && \
     chmod +x /root/bin/helm_${HELM_V} && \
     cd && rm -rf /root/tmp/helm && \
-    ln -s /root/bin/helm_${HELM_V} /root/bin/helm
+    ln -s helm_${HELM_V} /root/bin/helm
 
 # Get kubectx/ns
 RUN mkdir -p /root/tmp/kubectx && \
@@ -73,14 +67,14 @@ RUN mkdir -p /root/tmp/kubectx && \
     cp -a kubectx-${KUBECTX_V}/kubens  /root/bin/kubens_${KUBECTX_V}  && \
     cd && rm -rf /root/tmp/kubectx /root/tmp/kubens 2>/dev/null && \
     chmod +x /root/bin/kubectx_${KUBECTX_V} /root/bin/kubens_${KUBECTX_V} && \
-    ln -s /root/bin/kubectx_${KUBECTX_V} /root/bin/kubectx && \
-    ln -s /root/bin/kubens_${KUBECTX_V}  /root/bin/kubens
+    ln -s kubectx_${KUBECTX_V} /root/bin/kubectx && \
+    ln -s kubens_${KUBECTX_V}  /root/bin/kubens
 
 # Get kubebox
 RUN curl -L -o /root/bin/kubebox_$KUBEBOX_V https://github.com/astefanutti/kubebox/releases/download/$KUBEBOX_V/kubebox-linux && \
     chmod +x /root/bin/kubebox_$KUBEBOX_V && \
     rm -f /root/bin/kubebox 2>/dev/null && \
-    ln -s /root/bin/kubebox_$KUBEBOX_V /root/bin/kubebox
+    ln -s kubebox_$KUBEBOX_V /root/bin/kubebox
 
 RUN mkdir -p /root/tmp/docker && \
     cd /root/tmp/docker && \
@@ -89,20 +83,20 @@ RUN mkdir -p /root/tmp/docker && \
     cp -a docker/docker /root/bin/docker_${DOCKER_CE_V} && \
     rm -rf /root/tmp/docker 2>/dev/null && \
     chmod +x /root/bin/docker_${DOCKER_CE_V} && \
-    ln -s /root/bin/docker_${DOCKER_CE_V} /root/bin/docker
+    ln -s docker_${DOCKER_CE_V} /root/bin/docker
 
 RUN curl -L -o /root/bin/docker-machine_${DOCKER_MACHINE_V} \
                https://github.com//docker/machine/releases/download/v${DOCKER_MACHINE_V}/docker-machine-Linux-x86_64 && \
     chmod +x   /root/bin/docker-machine_${DOCKER_MACHINE_V} && \
     rm -f /root/bin/docker-machine 2>/dev/null && \
-    ln -s /root/bin/docker-machine_${DOCKER_MACHINE_V} /root/bin/docker-machine
+    ln -s docker-machine_${DOCKER_MACHINE_V} /root/bin/docker-machine
 
 RUN curl -L -o /root/bin/docker-compose_${DOCKER_COMPOSE_V} \
                https://github.com//docker/compose/releases/download/${DOCKER_COMPOSE_V}/docker-compose-Linux-x86_64 && \
     chmod +x   /root/bin/docker-compose_${DOCKER_COMPOSE_V} && \
     rm -rf     /root/bin/docker-compose 2>/dev/null && \
     cd && rm -rf /root/tmp/docker && \
-    ln -s      /root/bin/docker-compose_${DOCKER_COMPOSE_V} /root/bin/docker-compose
+    ln -s docker-compose_${DOCKER_COMPOSE_V} /root/bin/docker-compose
     #pip install docker-compose && \
 
 #ADD .bashrc /root/
