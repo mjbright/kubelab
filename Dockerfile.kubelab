@@ -19,15 +19,6 @@ ARG DOCKER_CE_V
 ARG DOCKER_MACHINE_V
 ARG DOCKER_COMPOSE_V
 
-ENV KUBECTL_V=$KUBECTL_V
-ENV HELM_V=$HELM_V
-ENV KUBECTX_V=$KUBECTX_V
-ENV KUBEBOX_V=$KUBEBOX_V
-
-ENV DOCKER_CE_V=$DOCKER_CE_V
-ENV DOCKER_MACHINE_V=$DOCKER_MACHINE_V
-ENV DOCKER_COMPOSE_V=$DOCKER_COMPOSE_V
-
 # Upgrade Pip / Get Kubernetes Python Client
 RUN pip install --upgrade pip && \
     pip install setuptools && \
@@ -41,13 +32,9 @@ RUN pip install --upgrade pip && \
 RUN pip install --no-cache-dir bash_kernel
 RUN python -m bash_kernel.install
 
-# Get kubectl
-RUN curl -L -o /root/bin/kubectl_${KUBECTL_V} https://storage.googleapis.com/kubernetes-release/release/$KUBECTL_V/bin/linux/amd64/kubectl && \
-    rm -f /root/bin/kubectl 2>/dev/null && \
-    ln -s kubectl_${KUBECTL_V} /root/bin/kubectl && \
-    chmod +x /root/bin/kubectl_${KUBECTL_V}
-
 # Get Helm
+ENV HELM_V=$HELM_V
+
 RUN mkdir -p /root/tmp/helm && \
     cd /root/tmp/helm && \
     curl -L -o helm.tar.gz https://get.helm.sh/helm-${HELM_V}-linux-amd64.tar.gz && \
@@ -59,6 +46,8 @@ RUN mkdir -p /root/tmp/helm && \
     ln -s helm_${HELM_V} /root/bin/helm
 
 # Get kubectx/ns
+ENV KUBECTX_V=$KUBECTX_V
+
 RUN mkdir -p /root/tmp/kubectx && \
     curl -L -o /root/tmp/kubectx.tgz https://github.com/ahmetb/kubectx/archive/v${KUBECTX_V}.tar.gz && \
     cd /root/tmp/  && \
@@ -71,10 +60,17 @@ RUN mkdir -p /root/tmp/kubectx && \
     ln -s kubens_${KUBECTX_V}  /root/bin/kubens
 
 # Get kubebox
+ENV KUBEBOX_V=$KUBEBOX_V
+
 RUN curl -L -o /root/bin/kubebox_$KUBEBOX_V https://github.com/astefanutti/kubebox/releases/download/$KUBEBOX_V/kubebox-linux && \
     chmod +x /root/bin/kubebox_$KUBEBOX_V && \
     rm -f /root/bin/kubebox 2>/dev/null && \
     ln -s kubebox_$KUBEBOX_V /root/bin/kubebox
+
+# Install Docker tools:
+ENV DOCKER_CE_V=$DOCKER_CE_V
+ENV DOCKER_MACHINE_V=$DOCKER_MACHINE_V
+ENV DOCKER_COMPOSE_V=$DOCKER_COMPOSE_V
 
 RUN mkdir -p /root/tmp/docker && \
     cd /root/tmp/docker && \
@@ -98,6 +94,14 @@ RUN curl -L -o /root/bin/docker-compose_${DOCKER_COMPOSE_V} \
     cd && rm -rf /root/tmp/docker && \
     ln -s docker-compose_${DOCKER_COMPOSE_V} /root/bin/docker-compose
     #pip install docker-compose && \
+
+# Get kubectl - INSTAL LAST AS THIS WILL CHANGE MOST OFTEN
+ENV KUBECTL_V=$KUBECTL_V
+
+RUN curl -L -o /root/bin/kubectl_${KUBECTL_V} https://storage.googleapis.com/kubernetes-release/release/$KUBECTL_V/bin/linux/amd64/kubectl && \
+    rm -f /root/bin/kubectl 2>/dev/null && \
+    ln -s kubectl_${KUBECTL_V} /root/bin/kubectl && \
+    chmod +x /root/bin/kubectl_${KUBECTL_V}
 
 #ADD .bashrc /root/
 #ADD tput /root/bin/tput
