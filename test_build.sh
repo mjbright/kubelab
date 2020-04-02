@@ -1,0 +1,1 @@
+docker build -f Dockerfile.jupyterkubelab --build-arg KUBECTL_V=v1.18.0 --build-arg HELM_V=v3.1.2 --build-arg KUBECTX_V=0.8.0 --build-arg KUBEBOX_V=v0.7.0 --build-arg DOCKER_CE_V=19.03.8 --build-arg DOCKER_MACHINE_V=0.16.1 --build-arg DOCKER_COMPOSE_V=1.24.1 . -t jupyterkubelab:testbuild
