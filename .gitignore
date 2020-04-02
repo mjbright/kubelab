@@ -1,0 +1,15 @@
+#XXX.gitignore
+JupyterKubeLab/jupyterkubelab.configurator/.gitignore
+JupyterKubeLab/jupyterkubelab.configurator/LICENSE
+JupyterKubeLab/jupyterkubelab.configurator/README.md
+JupyterKubeLab/jupyterkubelab.configurator/Untitled.ipynb
+JupyterKubeLab/jupyterkubelab.configurator/config_use.png
+JupyterKubeLab/jupyterkubelab.configurator/run.mjbright.sh
+JupyterKubeLab/jupyterkubelab.configurator/run.sh
+JupyterKubeLab/jupyterkubelab.zip
+Misc/
+NOTES.md
+old.version/
+#run.mjbright.sh
+#test_build.sh
+#test_docker_run.sh
