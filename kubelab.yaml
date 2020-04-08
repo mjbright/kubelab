@@ -34,5 +34,17 @@ spec:
   containers:
   - image: mjbright/kubelab:1.18.0
     name: kubelab
+    volumeMounts:
+    - mountPath: /root/.kube/config
+      subPath: config
+      name: kube-config
   dnsPolicy: ClusterFirst
   restartPolicy: Always
+  volumes:
+  - name: kube-config
+    configMap:
+      name: kube-configmap
+      items:
+      - key: config.kubelab
+        path: config
+
