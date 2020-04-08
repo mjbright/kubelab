@@ -32,7 +32,7 @@ metadata:
 spec:
   serviceAccountName: cluster-admin
   containers:
-  - image: mjbright/kubelab:1.16.8
+  - image: mjbright/kubelab:1.18.0
     name: kubelab
   dnsPolicy: ClusterFirst
   restartPolicy: Always
