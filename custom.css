@@ -1,0 +1,66 @@
+/* From gist: https://gist.github.com/predictiple/c1dbf7bc6cc53f7a3190 */
+
+@import url(https://fonts.googleapis.com/css?family=Roboto+Condensed:400,300,700&subset=latin,latin-ext);
+@import url(https://fonts.googleapis.com/css?family=Roboto+Slab&subset=latin,latin-ext);
+
+table.dataframe {
+    border-collapse: collapse;
+    border: none;
+}
+table.dataframe tr {
+    border: none;
+}
+table.dataframe td, table.dataframe th {
+    margin: 0;
+    border: 1px solid white;
+    padding-left: 0.25em;
+    padding-right: 0.25em;
+}
+table.dataframe th:not(:empty) {
+    background-color: lightsteelblue;
+    border: 2px solid white;
+    text-align: left;
+    font-family: 'Roboto Condensed', sans-serif;
+    font-weight: 300;
+}
+table.dataframe tr:nth-child(2) th:empty {
+    border-left: none;
+    border-right: 1px dashed #888;
+}
+table.dataframe tr:nth-child(even) {background: #e6e6e6}
+table.dataframe tr:nth-child(odd) {background: white}
+
+table.dataframe td {
+    border: 2px solid lightgray;
+    font-family: 'Roboto Condensed', sans-serif;
+    font-weight: 400;
+}
+div#notebook {
+    background-color: black;
+}
+body {
+    margin: 0;
+}
+div.text_cell_render {
+    margin: 0;
+    font-family: 'Roboto Condensed', sans-serif;
+    font-size: 120%;
+    color: black;
+    background-color: #dbe4f0;
+    border-left-color: dodgerblue;
+    border-left-width: 5px;
+    border-left-style: solid;
+    padding-left: 20px;
+}
+h1, h2, .h1, .h2 {
+    font-family: 'Roboto Condensed', sans-serif;
+    color: dodgerblue;
+    text-shadow: 0px 1px 1px dimgrey;
+}
+h3, h4, h5, h6, .h3, .h4, .h5, .h6 {
+    font-family: 'Roboto Condensed', sans-serif;
+    color: black;
+    text-shadow: 0px 1px 1px dimgrey;
+}
+
+

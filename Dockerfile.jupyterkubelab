@@ -6,6 +6,9 @@ USER root
 RUN apt-get update && apt-get upgrade -y
 RUN apt-get install -y tmux curl vim
 
+# For PDF rendering (but +800MBy??)
+RUN apt-get install -y texlive-xetex texlive-fonts-recommended texlive-generic-recommended
+
 WORKDIR /root/
 
 RUN mkdir -p /root/bin
@@ -125,6 +128,9 @@ ADD JupyterKubeLab/jupyterkubelab.configurator/config ${MAIN_PATH}/config
 
 #RUN set -x && ls -al /usr/local/jupyterkubelab /usr/local/jupyterkubelab/config/run_jupyter.sh && set +x
 RUN ls -al /usr/local/jupyterkubelab /usr/local/jupyterkubelab/config/run_jupyter.sh
+
+RUN mkdir -p /home/jovyan/.jupyter/custom
+ADD custom.css /home/jovyan/.jupyter/custom
 
 #CMD ["jupyter", "notebook", "--port", "8888", "--ip=0.0.0.0", "--allow-root", "--no-browser"]
 #CMD cd ${MAIN_PATH} && sh config/run_jupyter.sh

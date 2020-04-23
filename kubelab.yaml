@@ -32,7 +32,7 @@ metadata:
 spec:
   serviceAccountName: cluster-admin
   containers:
-  - image: mjbright/kubelab:1.18.0
+  - image: mjbright/kubelab:1.18.2
     name: kubelab
     volumeMounts:
     - mountPath: /root/.kube/config

@@ -2,6 +2,8 @@
 
 PROMPTS=1
 
+#BUILD_OPTS="--no-cache"
+
 ## -- Functions: -----------------------------------------------------------------
 
 kube1p15() {
@@ -27,7 +29,7 @@ kube1p17() {
 
 
 kube1p18() {
-    VERSION=1.18.0
+    VERSION=1.18.2
     BUILD_ARGS="--build-arg KUBECTL_V=v$VERSION
     --build-arg HELM_V=v3.1.2 --build-arg KUBECTX_V=0.8.0 --build-arg KUBEBOX_V=v0.7.0
     --build-arg DOCKER_CE_V=19.03.8 --build-arg DOCKER_MACHINE_V=0.16.1 --build-arg DOCKER_COMPOSE_V=1.24.1"
@@ -65,8 +67,8 @@ RUN() {
 }
 
 build_kubelab() {
-    RUN docker build -f Dockerfile.kubelab $BUILD_ARGS -t mjbright/kubelab:$VERSION . &&
-        docker build -f Dockerfile.jupyterkubelab $BUILD_ARGS -t mjbright/jupyterkubelab:$VERSION . &&
+    RUN docker build $BUILD_OPTS -f Dockerfile.kubelab $BUILD_ARGS -t mjbright/kubelab:$VERSION . &&
+        docker build $BUILD_OPTS -f Dockerfile.jupyterkubelab $BUILD_ARGS -t mjbright/jupyterkubelab:$VERSION . &&
         RUN docker login &&
         RUN docker push mjbright/kubelab:$VERSION &&
         RUN docker push mjbright/jupyterkubelab:$VERSION
@@ -78,9 +80,9 @@ build_kubelab() {
 
 ## -- Main: ----------------------------------------------------------------------
 #RUN docker build -t mjbright/skippbox-jupyter .
-kube1p15 && build_kubelab &&
-    kube1p16 && build_kubelab &&
-    kube1p17 && build_kubelab  &&
+#kube1p15 && build_kubelab &&
+    #kube1p16 && build_kubelab &&
+    #kube1p17 && build_kubelab  &&
     kube1p18 && build_kubelab  &&
     RUN docker tag  mjbright/kubelab:$VERSION mjbright/kubelab:latest &&
     RUN docker push mjbright/kubelab:latest
