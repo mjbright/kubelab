@@ -7,7 +7,7 @@ RUN apt-get update && apt-get upgrade -y
 RUN apt-get install -y tmux curl vim
 
 # For PDF rendering (but +800MBy??)
-RUN apt-get install -y texlive-xetex texlive-fonts-recommended texlive-generic-recommended
+# RUN apt-get install -y texlive-xetex texlive-fonts-recommended texlive-generic-recommended
 
 WORKDIR /root/
 
