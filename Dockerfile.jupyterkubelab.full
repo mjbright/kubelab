@@ -62,10 +62,41 @@ RUN mkdir -p /root/tmp/kubectx && \
     ln -s kubectx_${KUBECTX_V} /root/bin/kubectx && \
     ln -s kubens_${KUBECTX_V}  /root/bin/kubens
 
+# Get kubebox
+ENV KUBEBOX_V=$KUBEBOX_V
+
+RUN curl -L -o /root/bin/kubebox_$KUBEBOX_V https://github.com/astefanutti/kubebox/releases/download/$KUBEBOX_V/kubebox-linux && \
+    chmod +x /root/bin/kubebox_$KUBEBOX_V && \
+    rm -f /root/bin/kubebox 2>/dev/null && \
+    ln -s kubebox_$KUBEBOX_V /root/bin/kubebox
+
 # Install Docker tools:
 ENV DOCKER_CE_V=$DOCKER_CE_V
 ENV DOCKER_MACHINE_V=$DOCKER_MACHINE_V
 ENV DOCKER_COMPOSE_V=$DOCKER_COMPOSE_V
+
+RUN mkdir -p /root/tmp/docker && \
+    cd /root/tmp/docker && \
+    curl -L -o docker-${DOCKER_CE_V}.tgz https://download.docker.com/linux/static/stable/x86_64/docker-${DOCKER_CE_V}.tgz && \
+    tar zxf docker-${DOCKER_CE_V}.tgz && \
+    cp -a docker/docker /root/bin/docker_${DOCKER_CE_V} && \
+    rm -rf /root/tmp/docker 2>/dev/null && \
+    chmod +x /root/bin/docker_${DOCKER_CE_V} && \
+    ln -s docker_${DOCKER_CE_V} /root/bin/docker
+
+RUN curl -L -o /root/bin/docker-machine_${DOCKER_MACHINE_V} \
+               https://github.com//docker/machine/releases/download/v${DOCKER_MACHINE_V}/docker-machine-Linux-x86_64 && \
+    chmod +x   /root/bin/docker-machine_${DOCKER_MACHINE_V} && \
+    rm -f /root/bin/docker-machine 2>/dev/null && \
+    ln -s docker-machine_${DOCKER_MACHINE_V} /root/bin/docker-machine
+
+RUN curl -L -o /root/bin/docker-compose_${DOCKER_COMPOSE_V} \
+               https://github.com//docker/compose/releases/download/${DOCKER_COMPOSE_V}/docker-compose-Linux-x86_64 && \
+    chmod +x   /root/bin/docker-compose_${DOCKER_COMPOSE_V} && \
+    rm -rf     /root/bin/docker-compose 2>/dev/null && \
+    cd && rm -rf /root/tmp/docker && \
+    ln -s docker-compose_${DOCKER_COMPOSE_V} /root/bin/docker-compose
+    #pip install docker-compose && \
 
 # Get kubectl - INSTAL LAST AS THIS WILL CHANGE MOST OFTEN
 ENV KUBECTL_V=$KUBECTL_V
@@ -103,7 +134,9 @@ ADD custom.css /home/jovyan/.jupyter/custom
 RUN mkdir -p   /root/ipynb/images
 ADD nbtool.py nbfunctions.rc /root/ipynb/
 
+
 #CMD ["jupyter", "notebook", "--port", "8888", "--ip=0.0.0.0", "--allow-root", "--no-browser"]
 #CMD cd ${MAIN_PATH} && sh config/run_jupyter.sh
+#
+CMD cd ${MAIN_PATH} && sh config/run_jupyter.sh
 
-CMD ["/bin/sh", "-c", "cd ${MAIN_PATH}; while true; config/run_jupyter.sh; done"]
