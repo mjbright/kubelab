@@ -112,30 +112,38 @@ def substitute_vars_in_line(source_line, slno, VARS_SEEN):
 
 def next_section(current_sections, level, source_line):
     section_num=""
+    #break_line=""
+    #start_hl=''
+    #end_hl=''
     if level == 0:
         current_sections[0]+=1
         current_sections[1]=1
         current_sections[2]=1
         current_sections[3]=1
+        #break_line="\n<br />"
+        #start_hl='<b>'
+        #end_hl='</b>'
         section_num=f"{current_sections[0]}"
     if level == 1:
         current_sections[1]+=1
         current_sections[2]=1
         current_sections[3]=1
-        section_num=f"{current_sections[0]}.{current_sections[1]}."
+        section_num=f"{current_sections[0]}.{current_sections[1]}"
     if level == 2:
         current_sections[2]+=1
         current_sections[3]=1
-        section_num=f"{current_sections[0]}.{current_sections[1]}.{current_sections[2]}."
+        section_num=f"{current_sections[0]}.{current_sections[1]}.{current_sections[2]}"
     if level == 3:
         current_sections[3]+=1
-        section_num=f"{current_sections[0]}.{current_sections[1]}.{current_sections[2]}.{current_sections[3]}."
+        section_num=f"{current_sections[0]}.{current_sections[1]}.{current_sections[2]}.{current_sections[3]}"
 
     # Remove '#* '
     source_line=source_line[ source_line.find(' '):].lstrip()
     SE_regex = re.compile(r"([\d,\.]+) ") 
-    SE_regex.sub("", source_line)
-    return section_num + ' ' + source_line
+    source_line = SE_regex.sub("", source_line)
+    return_line = section_num + ' ' + source_line.rstrip() # Remove new-line
+    #return_line = break_line + start_hl + section_num + ' ' + source_line + end_hl
+    return (level, section_num, return_line)
           
 def filter_nb(json_data, DEBUG=False):
     HL_regex = re.compile(r"\|\s*HIGHLIGHT.*$") #, re.IGNORECASE)
@@ -146,7 +154,7 @@ def filter_nb(json_data, DEBUG=False):
     toc_cellno=-1
     count_sections=False
     current_sections=[]
-    toc_text=''
+    toc_text='<div id="TOC" >\n'
 
     for cellno in range(nb_cells(json_data)):
           #print(cellno)
@@ -169,7 +177,7 @@ def filter_nb(json_data, DEBUG=False):
               toc_cellno=cellno
               print(f"ToC cell detected at cellno[{cellno}]")
               count_sections=True
-              current_sections.append(1)
+              current_sections.append(0)
               current_sections.append(1)
               current_sections.append(1)
               current_sections.append(1)
@@ -183,13 +191,26 @@ def filter_nb(json_data, DEBUG=False):
               # Build up TableOfContents - Count sections headers and retain list for ToC text
               if source_line.find("#") == 0 and count_sections and cell_type == "markdown":
                   toc_line=''
-                  if source_line.find("# ") == 0:    toc_line = next_section(current_sections, 0, source_line)
-                  if source_line.find("## ") == 0:   toc_line = next_section(current_sections, 1, source_line)
-                  if source_line.find("### ") == 0:  toc_line = next_section(current_sections, 2, source_line)
-                  if source_line.find("#### ") == 0: toc_line = next_section(current_sections, 3, source_line)
+                  level=0
+                  if source_line.find("# ") == 0:    (level, section_num, toc_line) = next_section(current_sections, 0, source_line)
+                  if source_line.find("## ") == 0:   (level, section_num, toc_line) = next_section(current_sections, 1, source_line)
+                  if source_line.find("### ") == 0:  (level, section_num, toc_line) = next_section(current_sections, 2, source_line)
+                  if source_line.find("#### ") == 0: (level, section_num, toc_line) = next_section(current_sections, 3, source_line)
 
-                  toc_text += '* ' + toc_line + '\n'
-                  json_data['cells'][cellno]['source'][slno]=source_line[ :1+source_line.find(' ') ] + toc_line
+                  toc_link = f'<a href="#sec{section_num}" /> {toc_line} </a>'
+                  if level == 0:
+                      toc_text += f'\n<br /> <div id="TOC{section_num}" > <b> {toc_link} </b></div>\n'
+                  else:
+                      toc_text += f'* {toc_link}\n'
+
+                  if "." in section_num:
+                      top_section_num = section_num[ : section_num.find(".") ]
+                  else:
+                      top_section_num = section_num 
+
+                  json_data['cells'][cellno]['source'][slno] =\
+                          f'<a href="#TOC{top_section_num}" > Return to INDEX </a>\n' + \
+                          source_line[ :1+source_line.find(' ') ] + f'<div id="sec{section_num}" > '+toc_line+' </div>'
 
               # Pragma FOREACH (use singular form of variable e.g. __POD_IP which will be populated form __POD_IPS)
               if source_line.find("FOREACH __") == 0:
@@ -297,6 +318,7 @@ def filter_nb(json_data, DEBUG=False):
     #                 continue
            
     # Patch TableOfContents:
+    toc_text+='</div>'
     print(f"ToC set to <{toc_text}>")
     json_data['cells'][toc_cellno]['source'] = [ toc_text ]
 
