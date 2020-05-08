@@ -64,4 +64,11 @@ h3, h4, h5, h6, .h3, .h4, .h5, .h6 {
     text-shadow: 0px 1px 1px dimgrey;
 }
 
+a:link {
+    color: green;
+}
+a:visited {
+    color: darkgreen;
+}
+
 
