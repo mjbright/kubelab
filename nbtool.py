@@ -319,7 +319,8 @@ def filter_nb(json_data, DEBUG=False):
            
     # Patch TableOfContents:
     toc_text+='</div>'
-    print(f"ToC set to <{toc_text}>")
+    if DEBUG:
+        print(f"ToC set to <{toc_text}>")
     json_data['cells'][toc_cellno]['source'] = [ toc_text ]
 
     print(f"cells to include[#{len(cells)}]=[{cells}]")
