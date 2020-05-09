@@ -34,17 +34,17 @@ spec:
   containers:
   - image: mjbright/kubelab:1.18.2
     name: kubelab
+    resources:
+      limits:
+        memory: 512Mi
+      requests:
+        memory: 256Mi
     volumeMounts:
     - mountPath: /root/.kube/config
       subPath: config
       name: kube-config
   dnsPolicy: ClusterFirst
   restartPolicy: Always
-  resources:
-    limits:
-      memory: 512Mi
-    requests:
-      memory: 256Mi
   tolerations:
   - key: node-role.kubernetes.io/master
     operator: Equal

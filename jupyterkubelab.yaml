@@ -34,5 +34,29 @@ spec:
   containers:
   - image: mjbright/jupyterkubelab:1.16.8
     name: jupyterkubelab
+    resources:
+      limits:
+        memory: 512Mi
+      requests:
+        memory: 256Mi
+    volumeMounts:
+    - mountPath: /root/.kube/config
+      subPath: config
+      name: kube-config
   dnsPolicy: ClusterFirst
   restartPolicy: Always
+  tolerations:
+  - key: node-role.kubernetes.io/master
+    operator: Equal
+    effect: NoSchedule
+  #- key: node-role.kubernetes.io/master
+  #  operator: Equal
+  #  value: "true"
+  #  effect: NoSchedule
+  volumes:
+  - name: kube-config
+    configMap:
+      name: kube-configmap
+      items:
+      - key: config.kubelab
+        path: config
