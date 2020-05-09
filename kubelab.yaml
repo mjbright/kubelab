@@ -40,6 +40,19 @@ spec:
       name: kube-config
   dnsPolicy: ClusterFirst
   restartPolicy: Always
+  resources:
+    limits:
+      memory: 512Mi
+    requests:
+      memory: 256Mi
+  tolerations:
+  - key: node-role.kubernetes.io/master
+    operator: Equal
+    effect: NoSchedule
+  #- key: node-role.kubernetes.io/master
+  #  operator: Equal
+  #  value: "true"
+  #  effect: NoSchedule
   volumes:
   - name: kube-config
     configMap:
