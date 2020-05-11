@@ -146,7 +146,7 @@ def next_section(current_sections, level, source_line):
     return (level, section_num, return_line)
           
 def filter_nb(json_data, DEBUG=False):
-    HL_regex = re.compile(r"\|\s*HIGHLIGHT.*$") #, re.IGNORECASE)
+    EXCL_FN_regex = re.compile(r"\|?\s*EXCL_FN_.*$") #, re.IGNORECASE)
     include=False
     cells=[]
     VARS_SEEN={}
@@ -256,12 +256,12 @@ def filter_nb(json_data, DEBUG=False):
                       
                       #if not findInSource(source_lines, "SET_VAR_"):
 
-              # Pragma | HIGHLIGHT, HIGHLIGHT_EOL, HIGHLIGHT_SOL 
-              if "HIGHLIGHT" in source_line:
+              # Pragma | EXCL_FN_(HIDE_|HIGHLIGHT*)
+              if "EXCL_FN_" in source_line:
                   if DEBUG:
                       orig=json_data['cells'][cellno]['source'][slno]
                   json_data['cells'][cellno]['source'][slno] = \
-                      HL_regex.sub("", json_data['cells'][cellno]['source'][slno])
+                      EXCL_FN_regex.sub("", json_data['cells'][cellno]['source'][slno])
                   if DEBUG:
                       new=json_data['cells'][cellno]['source'][slno]
                       if new != orig:
