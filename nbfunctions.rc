@@ -188,6 +188,8 @@ TEST_VAR_FUNCTIONS() {
 
 # WAIT ON EXEC FUNCTIONS: ---------------------------------------------
 
+EXCL_FN_WAIT() { sleep $1; cat; return 0; }
+
 # Sleep and cell will be excluded
 WAIT() {
     sleep $1;
