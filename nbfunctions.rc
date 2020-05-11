@@ -290,9 +290,27 @@ EXCL_FN_CLEANUP() {
     kubectl -n default delete service --all
     kubectl -n default delete deploy --all
     kubectl -n default delete pods --all
+
+    kubectl -n kube-system delete deploy/traefik-ingress-controller
+    kubectl -n kube-system delete svc traefik-ingress-service
+    kubectl -n kube-system delete sa/traefik-ingress-controller
+    kubectl delete clusterrolebinding/traefik-ingress-controller
+    kubectl delete clusterrole/traefik-ingress-controller
+    #kubectl -n kube-system delete sa/traefik-ingress-controller
+
     kubectl taint node master node-role.kubernetes.io/master:NoSchedule
 
     kubectl get pods -A
+}
+
+EXEC_FN_CLEANUP_TRAEFIK() {
+    kubectl delete -f https://raw.githubusercontent.com/containous/traefik/v1.7/examples/k8s/traefik-deployment.yaml
+    kubectl delete -f https://raw.githubusercontent.com/containous/traefik/v1.7/examples/k8s/traefik-rbac.yaml
+}
+
+EXEC_FN_NODES_CHECK() {
+    kubectl get node
+    kubectl describe node | grep Pressure | grep True
 }
 
 # OTHER MISC   FUNCTIONS: ---------------------------------------------
