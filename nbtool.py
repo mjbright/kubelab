@@ -146,7 +146,7 @@ def next_section(current_sections, level, source_line):
     return (level, section_num, return_line)
           
 def filter_nb(json_data, DEBUG=False):
-    EXCL_FN_regex = re.compile(r"\|?\s*EXCL_FN_.*$") #, re.IGNORECASE)
+    EXCL_FN_regex = re.compile(r"\|?\&?\s*EXCL_FN_.*$") #, re.IGNORECASE)
     include=False
     cells=[]
     VARS_SEEN={}
