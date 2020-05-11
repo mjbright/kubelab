@@ -62,11 +62,12 @@ EXCL_FN_FILTER_NOTEBOOK() {
 
 # EXCL_FN_* FUNCTIONS: ------------------------------------------------
 
-EXCL_FN_HIDE()          { grep -v $* ;                          return 0; }
+EXCL_FN_HIDE()          { grep -v $* ;                        return 0; }
 
-EXCL_FN_HIGHLIGHT()     { grep --color=always -E "|.*${*}.*";   return 0; }
-EXCL_FN_HIGHLIGHT_EOL() { grep --color=always -E "|${*}.*";     return 0; }
-EXCL_FN_HIGHLIGHT_SOL() { grep --color=always -E "|.*${*}";     return 0; }
+EXCL_FN_HIGHLIGHT()     { grep --color=always -E "|.*${*}.*"; return 0; }
+EXCL_FN_HIGHLIGHT_EOL() { grep --color=always -E "|${*}.*";   return 0; }
+EXCL_FN_HIGHLIGHT_SOL() { grep --color=always -E "|.*${*}";   return 0; }
+EXCL_FN_HIGHLIGHT_MATCH() { grep --color=always -E "${*}";    return 0; }
 
 #echo HELLO WORLD from Jupyter | EXCL_FN_HIGHLIGHT WORLD
 #echo HELLO WORLD from Jupyter | EXCL_FN_HIGHLIGHT_EOL WORLD
