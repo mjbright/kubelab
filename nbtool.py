@@ -212,6 +212,16 @@ def filter_nb(json_data, DEBUG=False):
                           f'<a href="#TOC{top_section_num}" > Return to INDEX </a>\n' + \
                           source_line[ :1+source_line.find(' ') ] + f'<div id="sec{section_num}" > '+toc_line+' </div>'
 
+              if cell_type == "markdown" and \
+                 (source_line.find("**RedNote") != -1 or \
+                  source_line.find("**BlueNote") != -1 or \
+                  source_line.find("**GreenNote") != -1):
+                     source_line=source_line.replace("**RedNote", "<div class='red_bold_text'>Note")
+                     source_line=source_line.replace("**BlueNote", "<div class='blue_bold_text'>Note")
+                     source_line=source_line.replace("**GreenNote", "<div class='green_bold_text'>Note")
+                     source_line=source_line.replace("**", "</div>")
+                     json_data['cells'][cellno]['source'][slno] = source_line
+
               # Pragma FOREACH (use singular form of variable e.g. __POD_IP which will be populated form __POD_IPS)
               if source_line.find("FOREACH __") == 0:
                   rest_line=source_line[ len("FOREACH __"): ].lstrip()
