@@ -3,8 +3,7 @@ FROM leandatascience/jupyterlab-ds:latest
 USER root
 
 # Upgrade Apt repos / Get tmux
-RUN apt-get update && apt-get upgrade -y
-RUN apt-get install -y tmux curl vim
+RUN apt-get update && apt-get upgrade -y && apt-get install -y tmux curl vim && apt-get clean && apt-get autoclean
 
 # For PDF rendering (but +800MBy??)
 # RUN apt-get install -y texlive-xetex texlive-fonts-recommended texlive-generic-recommended
@@ -28,7 +27,7 @@ RUN pip install --upgrade pip && \
     pip install pick ppretty && \
     pip install RISE && \
     pip install kubernetes && \
-    pip install jupyter_nbextensions_configurator 
+    pip install jupyter_nbextensions_configurator
 RUN jupyter nbextensions_configurator enable --system
 
 # ---- Install bash_kernel:

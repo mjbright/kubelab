@@ -3,8 +3,7 @@ FROM jupyter/base-notebook:python-3.7.6
 USER root
 
 # Upgrade Apt repos / Get tmux
-RUN apt-get update && apt-get upgrade -y
-RUN apt-get install -y tmux curl vim
+RUN apt-get update && apt-get upgrade -y && apt-get install -y tmux curl vim && apt-get clean && apt-get autoclean
 
 # For PDF rendering (but +800MBy??)
 # RUN apt-get install -y texlive-xetex texlive-fonts-recommended texlive-generic-recommended
