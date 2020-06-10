@@ -55,7 +55,7 @@ EXCL_FN_SETUP() {
 #
 EXCL_FN_FILTER_NOTEBOOK() {
     NOTEBOOK="$1"
-    [ -z "$NOTEBOOK" ] && NOTEBOOK=$(ls -1 *.ipynb | grep -v filtered | tail -1)
+    [ -z "$NOTEBOOK" ] && NOTEBOOK=$(ls -1tr *.ipynb | grep -v filtered | tail -1)
     
     # In kubelab:
     #CMD="/opt/conda/bin/python3 ./nbtool.py -f $NOTEBOOK"
