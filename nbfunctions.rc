@@ -65,6 +65,9 @@ EXCL_FN_FILTER_NOTEBOOK() {
     CMD="$PYTHON3 ./nbtool.py -f $NOTEBOOK"
     echo "---- $CMD"
     $CMD
+    OP_NOTEBOOK=$(ls -1tr *.ipynb | grep filtered | tail -1)
+    ls -altr $OP_NOTEBOOK
+    grep EXCLUDE $OP_NOTEBOOK
     return 0
 }
 
