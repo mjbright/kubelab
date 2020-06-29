@@ -197,6 +197,16 @@ TEST_VAR_FUNCTIONS() {
     FOREACH __POD_IP echo "POD_IP=\$__POD_IP"
 }
 
+SET_VAR_POD_NAME() {
+    local PODNAME_MATCH=$1; shift;
+    local POD_IDX=1;
+    local NS="default";
+    [ ! -z "$1" ] && { POD_IDX=$1; shift; }
+    [ ! -z "$1" ] && { NS=$1;      shift; }
+    __POD_NAME=$(kubectl get pods -n $NS --no-headers | grep $PODNAME_MATCH | head -$POD_IDX | tail -1 | awk '{ print $1; }')
+    echo VAR __POD_NAME=$__POD_NAME
+}
+
 # WAIT ON EXEC FUNCTIONS: ---------------------------------------------
 
 EXCL_FN_WAIT() { sleep $1; cat; return 0; }
