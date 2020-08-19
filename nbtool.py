@@ -1,8 +1,13 @@
 #!/usr/bin/env python3
 
-import json, sys, re
+import json, sys, re, os
 
 DEBUG=False
+
+def writefile(path, mode='w', text='hello world\n'):
+    ofd = open(path, mode)
+    ofd.write(text)
+    ofd.close()
 
 def read_json(ipfile):
     #with open(ipfile, 'r') as f:
@@ -60,6 +65,10 @@ def main():
           a+=1
           MODE='filter'
 
+    if sys.argv[a] == '-s':
+          a+=1
+          MODE='split'
+
     if sys.argv[a] == '-1':
           a+=1
           MODE='dump1l'
@@ -79,6 +88,15 @@ def main():
             opfile=ipfile+'.filtered.ipynb'
             write_nb(opfile, new_data)
             nb_info(opfile)
+
+    if MODE=='split':
+        for ipfile in sys.argv[a:]:
+            print(nb_info(ipfile))
+            split_nb( read_json(ipfile), DEBUG )
+            print("DONE")
+            #opfile=ipfile+'.filtered.ipynb'
+            #write_nb(opfile, new_data)
+            #nb_info(opfile)
 
 def findInSource(source_lines, match):
     for line in source_lines:
@@ -345,5 +363,75 @@ def filter_nb(json_data, DEBUG=False):
     print(f"cells to include[#{len(cells)}]=[{cells}]")
     return json_data
 
+def write_markdown(markdown_file, cell_type, section_title, current_cell_text):
+    print(f'writefile({markdown_file})')
+    current_cell_text = f'<!-- cell type: {cell_type} -->\n' + current_cell_text
+    current_cell_text = f'<!-- section title:<<<{section_title}>>>-->\n' + current_cell_text
+    writefile(f'{markdown_file}', 'w', current_cell_text)
+
+def split_nb(json_data, DEBUG=False):
+    cells=[]
+    VARS_SEEN={}
+
+    toc_cellno=-1
+    count_sections=False
+    current_sections=[]
+    toc_text='<div id="TOC" >\n'
+
+    SPLIT_ON_SECTIONS=-1 # Split on any level
+    SPLIT_ON_SECTIONS=1 # Split only on 1st-level i.e. 1, 2, ..
+    SPLIT_ON_SECTIONS=2 # Split only 1st, 2nd-level i.e. 1, 1.1, 1.2, 2, 2.1, ...
+
+    current_cell_text='' 
+    section_no='1'
+    section_title='UNKNOWN'
+    os.mkdir('md')
+    markdown_file=f'md/section_{section_no}.md'
+
+    div_sec='<div id="sec'
+    len_div_sec=len( div_sec )
+    for cellno in range(nb_cells(json_data)):
+          #print(cellno)
+          cell_type=json_data['cells'][cellno]['cell_type']
+          source_lines=json_data['cells'][cellno]['source']
+          if len(source_lines) == 0:
+              if DEBUG: print("empty")
+              continue
+
+          for slno in range(len(source_lines)):
+              source_line=source_lines[slno]
+
+              if div_sec in source_line:
+                  start_pos = source_line.find( div_sec )
+                  end_pos = start_pos + len_div_sec + source_line[ start_pos + len_div_sec : ].find('"')
+                  next_section_no=source_line[ start_pos + len_div_sec : end_pos ]
+
+                  ## <div id="sec1.2" > 1.2 This Lab Cluster </div>
+                  close_div_pos = end_pos + source_line[ end_pos : ].find('</div')
+                  next_section_title=source_line[ end_pos : close_div_pos ]
+
+                  print(f"LINE[0]: <<<{source_line}>>>")
+                  print(f"pos[{start_pos}:{end_pos}]")
+
+                  if div_sec in source_line[ start_pos + len_div_sec : ]: die("OOPS")
+    
+                  if next_section_no.count('.') < SPLIT_ON_SECTIONS:
+                      if current_cell_text != '':
+                          write_markdown(markdown_file, cell_type, section_title, current_cell_text)
+                          current_cell_text='' 
+                      section_no=next_section_no
+                      section_title=next_section_title
+                      #section_title=section_title.replace(" ", "")
+                      markdown_file=f'md/section_{section_no}.md'
+                      print(f"New section {section_no} seen")
+
+              current_cell_text+=source_line
+
+    if current_cell_text != '':
+        #print(f'writefile({markdown_file})')
+        #writefile(f'{markdown_file}', 'w', current_cell_text)
+        write_markdown(markdown_file, cell_type, section_title, current_cell_text)
+
 if __name__ == "__main__":
     main()
+
