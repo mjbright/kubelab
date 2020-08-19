@@ -373,6 +373,8 @@ def split_nb(json_data, DEBUG=False):
     cells=[]
     VARS_SEEN={}
 
+    md_files_index=''
+
     toc_cellno=-1
     count_sections=False
     current_sections=[]
@@ -386,7 +388,9 @@ def split_nb(json_data, DEBUG=False):
     section_no='1'
     section_title='UNKNOWN'
     os.mkdir('md')
-    markdown_file=f'md/section_{section_no}.md'
+    markdown_file=f'section_{section_no}.md'
+    markdown_file_path=f'md/{markdown_file}'
+    # md_files_index+=markdown_file+'\n'
 
     div_sec='<div id="sec'
     len_div_sec=len( div_sec )
@@ -417,20 +421,25 @@ def split_nb(json_data, DEBUG=False):
     
                   if next_section_no.count('.') < SPLIT_ON_SECTIONS:
                       if current_cell_text != '':
-                          write_markdown(markdown_file, cell_type, section_title, current_cell_text)
+                          write_markdown(markdown_file_path, cell_type, section_title, current_cell_text)
                           current_cell_text='' 
                       section_no=next_section_no
                       section_title=next_section_title
                       #section_title=section_title.replace(" ", "")
-                      markdown_file=f'md/section_{section_no}.md'
+                      markdown_file=f'section_{section_no}.md'
+                      markdown_file_path=f'md/{markdown_file}'
                       print(f"New section {section_no} seen")
+                      md_files_index+=markdown_file+'\n'
 
               current_cell_text+=source_line
 
     if current_cell_text != '':
         #print(f'writefile({markdown_file})')
         #writefile(f'{markdown_file}', 'w', current_cell_text)
-        write_markdown(markdown_file, cell_type, section_title, current_cell_text)
+        write_markdown(markdown_file_path, cell_type, section_title, current_cell_text)
+
+    writefile('md/index.txt', 'w', md_files_index)
+
 
 if __name__ == "__main__":
     main()
