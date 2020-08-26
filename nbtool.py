@@ -363,11 +363,13 @@ def filter_nb(json_data, DEBUG=False):
     print(f"cells to include[#{len(cells)}]=[{cells}]")
     return json_data
 
-def write_markdown(markdown_file, cell_type, section_title, current_cell_text):
+def write_markdown(markdown_file, cell_num, cell_type, section_title, current_section_text):
     print(f'writefile({markdown_file})')
-    current_cell_text = f'<!-- cell type: {cell_type} -->\n' + current_cell_text
-    current_cell_text = f'<!-- section title:<<<{section_title}>>>-->\n' + current_cell_text
-    writefile(f'{markdown_file}', 'w', current_cell_text)
+    current_section_text = f'<!-- cell_num: {cell_num} -->\n' + \
+                        f'<!-- cell_type: {cell_type} -->\n' + \
+                        f'<!-- section_title:<<<{section_title}>>>-->\n' + \
+                        current_section_text
+    writefile(f'{markdown_file}', 'w', current_section_text)
 
 def split_nb(json_data, DEBUG=False):
     cells=[]
@@ -384,7 +386,7 @@ def split_nb(json_data, DEBUG=False):
     SPLIT_ON_SECTIONS=1 # Split only on 1st-level i.e. 1, 2, ..
     SPLIT_ON_SECTIONS=2 # Split only 1st, 2nd-level i.e. 1, 1.1, 1.2, 2, 2.1, ...
 
-    current_cell_text='' 
+    current_section_text='' 
     section_no='1'
     section_title='UNKNOWN'
     os.mkdir('md')
@@ -401,6 +403,10 @@ def split_nb(json_data, DEBUG=False):
           if len(source_lines) == 0:
               if DEBUG: print("empty")
               continue
+
+          # current_cell_text='' 
+          if cell_type == 'code': current_section_text+='\n```'
+          # current_cell_text='' 
 
           for slno in range(len(source_lines)):
               source_line=source_lines[slno]
@@ -420,9 +426,9 @@ def split_nb(json_data, DEBUG=False):
                   if div_sec in source_line[ start_pos + len_div_sec : ]: die("OOPS")
     
                   if next_section_no.count('.') < SPLIT_ON_SECTIONS:
-                      if current_cell_text != '':
-                          write_markdown(markdown_file_path, cell_type, section_title, current_cell_text)
-                          current_cell_text='' 
+                      if current_section_text != '':
+                          write_markdown(markdown_file_path, cellno+1, cell_type, section_title, current_section_text)
+                          current_section_text='' 
                       section_no=next_section_no
                       section_title=next_section_title
                       #section_title=section_title.replace(" ", "")
@@ -431,12 +437,15 @@ def split_nb(json_data, DEBUG=False):
                       print(f"New section {section_no} seen")
                       md_files_index+=markdown_file+'\n'
 
-              current_cell_text+=source_line
+              #current_section_text+='\n'+source_line
+              current_section_text+=source_line
 
-    if current_cell_text != '':
+          if cell_type == 'code': current_section_text+='\n```\n'
+
+    if current_section_text != '':
         #print(f'writefile({markdown_file})')
-        #writefile(f'{markdown_file}', 'w', current_cell_text)
-        write_markdown(markdown_file_path, cell_type, section_title, current_cell_text)
+        #writefile(f'{markdown_file}', 'w', current_section_text)
+        write_markdown(markdown_file_path, cellno+1, cell_type, section_title, current_section_text)
 
     writefile('md/index.txt', 'w', md_files_index)
 
